@@ -1,7 +1,10 @@
 import fs from 'fs/promises';
 import protobuf from 'protobufjs';
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-const PROTO_PATH = '../proto/grpc.proto'
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const PROTO_PATH = path.join(__dirname, '../proto/grpc.proto')
 
 async function generateCodeFromRoot() {
   const root = await protobuf.load(PROTO_PATH);

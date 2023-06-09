@@ -1,6 +1,6 @@
 {
   "name": "bisq-api-node",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node.js wrapper for local and remote Bisq API endpoints",
   "main": "./dist/cjs/bisq.cjs",
   "module": "./lib/bisq.mjs",
@@ -28,6 +28,7 @@
     "api",
     "bitcoin",
     "bisq",
+    "bisq-network",
     "btc",
     "bsq",
     "daemon",

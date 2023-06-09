@@ -1,0 +1,56 @@
+{
+  "name": "bisq-api-node",
+  "version": "1.0.0",
+  "description": "Node.js wrapper for local and remote Bisq API endpoints",
+  "main": "./dist/cjs/bisq.cjs",
+  "module": "./lib/bisq.mjs",
+  "exports": {
+    ".": {
+      "import": "./lib/bisq.mjs",
+      "require": "./dist/cjs/bisq.cjs"
+    }
+  },
+  "engines": {
+    "node": "19.x"
+  },
+  "scripts": {
+    "build": "babel lib --out-dir dist/cjs --extensions '.mjs' --out-file-extension '.cjs' --source-maps"
+  },
+  "files": [
+    "lib/",
+    "dist/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dutu/bisq-api-node"
+  },
+  "keywords": [
+    "api",
+    "bitcoin",
+    "bisq",
+    "btc",
+    "bsq",
+    "daemon",
+    "gRPC"
+  ],
+  "author": "dutu <dutu@protonmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dutu/bisq-api-node/issues"
+  },
+  "homepage": "https://github.com/dutu/bisq-api-node",
+  "packageManager": "yarn@3.6.0",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.8.15",
+    "@grpc/proto-loader": "^0.7.7",
+    "google-protobuf": "^3.21.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/register": "^7.22.5",
+    "babel-plugin-add-module-exports": "^1.0.4",
+    "protobufjs": "^7.2.3"
+  }
+}

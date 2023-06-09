@@ -20,4 +20,4 @@ grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./api --grpc_out=gr
 ```
 
 * See example on how to access Bisq API using the generated files:
-  [stubs.mjs](example_getMarketPrice.mjs)
+  [stubs.mjs](../examples/stubs.mjs)

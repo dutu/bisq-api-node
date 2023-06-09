@@ -100,6 +100,9 @@ Example of how to start Bisq API Daemon:
 # Shutdown Bisq GUI
 kill -15 $(pgrep Bisq)
 
+# enable firewall port (if needed)
+sudo ufw allow 9998/tcp comment 'gRPC Bisq API daemon'
+
 # Start Bisq API daemon
 ./bisq-daemon --apiPort=9998  --apiPassword=myapiPassword
 ```

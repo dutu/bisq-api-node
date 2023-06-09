@@ -1,6 +1,6 @@
 {
   "name": "bisq-api-node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Node.js wrapper for local and remote Bisq API endpoints",
   "main": "./dist/cjs/bisq.cjs",
   "module": "./lib/bisq.mjs",
@@ -18,7 +18,8 @@
   },
   "files": [
     "lib/",
-    "dist/"
+    "dist/",
+    "proto/"
   ],
   "repository": {
     "type": "git",

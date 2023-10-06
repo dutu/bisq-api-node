@@ -68,7 +68,7 @@ console.log(result)
 
 * Git Client
 
-* Java SDK
+* Java JDK 11
 
 * Bisq API Daemon installed and running 
 
@@ -77,28 +77,18 @@ console.log(result)
 > The API daemon and the GUI share the same default wallet and connection ports. Beyond inevitable failures due to fighting over the wallet and ports, doing so will probably corrupt your wallet. Before starting the API daemon, make sure your GUI is shut down, and vice-versa. Please back up your mainnet wallet early and often with the GUI.
 
 
-Example of how to prepare a Debian machine with Bisq API Daemon:
+### Running Bisq API daemon
 
+* Build Bisq:  
+See [Building Bisq](https://github.com/bisq-network/bisq/blob/master/docs/build.md#building-bisq).
+
+
+* Open firewall port (if needed)
 ```shell
-# Install Git
-sudo apt install git
-
-# Install Java
-sudo apt search openjdk
-sudo apt install openjdk-17-jdk
-
-# Clone the Bisq master branch  
-git clone https://github.com/bisq-network/bisq.git bisq-api
-
-# Build the source
-cd bisq-api
-./gradlew clean build
-
-# enable firewall port (if needed)
 sudo ufw allow 9998/tcp comment 'gRPC Bisq API daemon'
 ```
 
-Example of how to start Bisq API Daemon:
+Start Bisq API Daemon:
 ```shell
 # Shutdown Bisq GUI
 kill -15 $(pgrep Bisq)

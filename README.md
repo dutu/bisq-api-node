@@ -64,11 +64,7 @@ console.log(result)
 
 ## Requirements for target Bisq API Daemon 
 
-* OS: Linux or Mac OSX
-
-* Git Client
-
-* Java JDK 11
+* Java JDK 11 or 15
 
 * Bisq API Daemon installed and running 
 
@@ -79,20 +75,11 @@ console.log(result)
 
 ### Running Bisq API daemon
 
-* Build Bisq:  
-See [Building Bisq](https://github.com/bisq-network/bisq/blob/master/docs/build.md#building-bisq).
-
-
-* Open firewall port (if needed)
-```shell
-sudo ufw allow 9998/tcp comment 'gRPC Bisq API daemon'
-```
-
 Start Bisq API Daemon:
 ```shell
 # Shutdown Bisq GUI
 kill -15 $(pgrep Bisq)
 
 # Start Bisq API daemon
-./bisq-daemon --apiPort=9998  --apiPassword=myapiPassword
+java -jar daemon.jar --apiPort=9998 --apiPassword=becareful
 ```

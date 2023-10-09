@@ -28,8 +28,6 @@ $ cd daemon/package/
 $ ./create-daemon-dist.sh $VERSION
 ```
 
-```shell
-
 * Check that the package has been generated:
 ```shell
 $ ls -ls

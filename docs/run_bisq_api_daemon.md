@@ -2,16 +2,19 @@
 
 ## Build bisq
 
-* Find the latest Bisq release and set the env var:
+* Go to https://github.com/bisq-network/bisq/releases to find the latest Bisq release.
+
+* Set the env var:
 ```shell
-$ VERSION="v1.9.13"
+$ VERSION="1.9.14"
 ```
 
-* Clone Bisq latest release:
+* Download the latest Bisq source code and extract the archive:
 ```shell
 $ cd ~/
-$ git clone --branch release/$VERSION https://github.com/bisq-network/bisq
-$ cd bisq
+$ wget -O bisq-v$VERSION.zip https://github.com/bisq-network/bisq/archive/refs/tags/v$VERSION.zip
+$ unzip bisq-v$VERSION.zip
+$ cd bisq-$VERSION
 ```
 
 * Build Bisq:
@@ -41,7 +44,8 @@ $ mv bisq-daemon-*.zip ~/
 * Cleanup:
 ```shell
 $ cd ~/
-$ rm -fr bisq
+$ rm -fr bisq-$VERSION
+$ rm -f bisq-v$VERSION.zip
 ```
 
 
@@ -49,7 +53,8 @@ $ rm -fr bisq
 
 * Unpack the archive: 
 ```shell
-$ unzip bisq-daemon-$VERSION.zip 
+$ unzip bisq-daemon-$VERSION.zip
+$ rm -fr ~/bisq-daemon
 $ mv bisq-daemon-$VERSION ~/bisq-daemon
 ```
 

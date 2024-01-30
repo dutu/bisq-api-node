@@ -11,7 +11,7 @@
     }
   },
   "engines": {
-    "node": "19.x"
+    "node": "20.x"
   },
   "scripts": {
     "build": "babel lib --out-dir dist/cjs --extensions '.mjs' --out-file-extension '.cjs' --source-maps"
@@ -41,18 +41,18 @@
     "url": "https://github.com/dutu/bisq-api-node/issues"
   },
   "homepage": "https://github.com/dutu/bisq-api-node",
-  "packageManager": "yarn@3.6.0",
+  "packageManager": "yarn@4.0.2",
   "dependencies": {
-    "@grpc/grpc-js": "^1.8.15",
-    "@grpc/proto-loader": "^0.7.7",
+    "@grpc/grpc-js": "^1.9.14",
+    "@grpc/proto-loader": "^0.7.10",
     "google-protobuf": "^3.21.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.22.5",
-    "@babel/core": "^7.22.5",
-    "@babel/preset-env": "^7.22.5",
-    "@babel/register": "^7.22.5",
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
+    "@babel/register": "^7.23.7",
     "babel-plugin-add-module-exports": "^1.0.4",
-    "protobufjs": "^7.2.3"
+    "protobufjs": "^7.2.6"
   }
 }

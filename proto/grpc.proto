@@ -732,6 +732,9 @@ service Wallets {
     // Get the name of the BTC / BSQ network (mainnet, testnet3, or regtest).
     rpc GetNetwork (GetNetworkRequest) returns (GetNetworkReply) {
     }
+    // Get status of the DAO.
+    rpc GetDaoStatus (GetDaoStatusRequest) returns (GetDaoStatusReply) {
+    }
     // Get the Bisq wallet's current BSQ and BTC balances.
     rpc GetBalances (GetBalancesRequest) returns (GetBalancesReply) {
     }
@@ -761,6 +764,10 @@ service Wallets {
     // Remove the custom bitcoin miner transaction fee rate;  revert to the Bisq network's bitcoin miner transaction fee rate.
     rpc UnsetTxFeeRatePreference (UnsetTxFeeRatePreferenceRequest) returns (UnsetTxFeeRatePreferenceReply) {
     }
+    // Get a bitcoin transactions.
+    rpc GetTransactions (GetTransactionsRequest) returns (GetTransactionsReply) {
+    }
+
     // Get a bitcoin transaction summary.
     rpc GetTransaction (GetTransactionRequest) returns (GetTransactionReply) {
     }
@@ -789,6 +796,13 @@ message GetNetworkRequest {
 
 message GetNetworkReply {
     string network = 1;         // The BTC network name (mainnet, testnet3, or regtest).
+}
+
+message GetDaoStatusRequest {
+}
+
+message GetDaoStatusReply {
+    bool is_dao_state_ready_and_in_sync = 1;
 }
 
 message GetBalancesRequest {
@@ -878,6 +892,13 @@ message UnsetTxFeeRatePreferenceRequest {
 
 message UnsetTxFeeRatePreferenceReply {
     TxFeeRateInfo tx_fee_rate_info = 1; // The summary of the most recently available bitcoin transaction fee rates.
+}
+
+message GetTransactionsRequest {
+}
+
+message GetTransactionsReply {
+    repeated TxInfo tx_info = 1; // List of Bitcoin transactions.
 }
 
 message GetTransactionRequest {

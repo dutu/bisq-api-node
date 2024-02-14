@@ -36,7 +36,7 @@ $ ./create-daemon-dist.sh $VERSION
 $ ls -ls
 ```
 
-* move the archive:
+* Move the archive:
 ```shell
 $ mv bisq-daemon-*.zip ~/
 ```
@@ -45,18 +45,17 @@ $ mv bisq-daemon-*.zip ~/
 ```shell
 $ cd ~/
 $ rm -fr bisq-$VERSION
-$ rm -f bisq-v$VERSION.zip
 ```
 
-
-## Run the Bisq API daemon
-
-* Unpack the archive: 
+* Unpack the archive:
 ```shell
 $ unzip bisq-daemon-$VERSION.zip
 $ rm -fr ~/bisq-daemon
 $ mv bisq-daemon-$VERSION ~/bisq-daemon
 ```
+
+
+## Run the Bisq API daemon
 
 * Run daemon.jar on Mainnet:
 ```shell

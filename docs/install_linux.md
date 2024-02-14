@@ -83,5 +83,5 @@ $ nano ~/.bashrc
 ```
     
 ```shell
-$ export PATH=/usr/lib/jvm/openjdk-15/bin:$PATH
+export PATH=/usr/lib/jvm/openjdk-15/bin:$PATH
 ```

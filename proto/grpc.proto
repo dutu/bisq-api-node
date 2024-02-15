@@ -669,6 +669,14 @@ message TradeInfo {
     BsqSwapTradeInfo bsq_swap_trade_info = 28;
     // Needed by open/closed/failed trade list items.
     string closing_status = 29;
+    // Whether the trade failed.
+    bool has_failed = 30;
+    // Error message applicable when trade is failed.
+    string error_message = 31;
+    // txId used for XMR auto conf.
+    string auto_conf_tx_id = 32;
+    // tx key used for XMR auto conf.
+    string auto_conf_tx_key = 33;
 }
 
 message ContractInfo {

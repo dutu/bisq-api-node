@@ -21,15 +21,6 @@ import "pb.proto";
 option java_package = "bisq.proto.grpc";
 option java_multiple_files = true;
 
-/*
-* The DisputeAgents service is provided for development only;  it can only be used when running in regtest mode.
-*/
-service DisputeAgents {
-    // Register regtest / dev mode dispute agents.  Does not work when running on mainnet.
-    rpc RegisterDisputeAgent (RegisterDisputeAgentRequest) returns (RegisterDisputeAgentReply) {
-    }
-}
-
 message RegisterDisputeAgentRequest {
     // One of "mediator" or "refundagent".  Development / test arbitrators can only be registered in the UI.
     string dispute_agent_type = 1;
@@ -40,11 +31,6 @@ message RegisterDisputeAgentRequest {
 message RegisterDisputeAgentReply {
 }
 
-service Help {
-    // Returns a CLI command man page.
-    rpc GetMethodHelp (GetMethodHelpRequest) returns (GetMethodHelpReply) {
-    }
-}
 
 message GetMethodHelpRequest {
     string method_name = 1;  // The CLI command name.
@@ -54,55 +40,6 @@ message GetMethodHelpReply {
     string method_help = 1;  // The man page for the CLI command.
 }
 
-/*
-* The Offers service provides rpc methods for creating, editing, listing, and cancelling Bisq offers.
-*/
-service Offers {
-    // Get an offer's category, one of  FIAT, ALTCOIN, or BSQ_SWAP.  This information is needed before an offer
-    // can be taken, and is used by a client to determine what kind of offer to take:  a v1 FIAT or ALTCOIN offer,
-    // or a BSQ swap offer.  V1 and BSQ swap trades are handled differently in the API daemon.
-    rpc GetOfferCategory (GetOfferCategoryRequest) returns (GetOfferCategoryReply) {
-    }
-    // Get the available BSQ swap offer with offer-id.
-    rpc GetBsqSwapOffer (GetOfferRequest) returns (GetBsqSwapOfferReply) {
-    }
-    // Get the v1 protocol offer with an offer-id.  Your node must have a payment account with the same
-    // payment method as the offer's associated payment method, e,g., ACH_TRANSFER, CASH_DEPOSIT, etc.
-    rpc GetOffer (GetOfferRequest) returns (GetOfferReply) {
-    }
-    // Get user's BSQ swap offer with offer-id.
-    rpc GetMyBsqSwapOffer (GetMyOfferRequest) returns (GetMyBsqSwapOfferReply) {
-    }
-    // Get my open v1 protocol offer with offer-id.  Deprecated since 27-Dec-2021 (v1.8.0).  Use GetOffer.
-    rpc GetMyOffer (GetMyOfferRequest) returns (GetMyOfferReply) {
-    }
-    // Get all available BSQ swap offers with a BUY (BTC) or SELL (BTC) direction.
-    rpc GetBsqSwapOffers (GetBsqSwapOffersRequest) returns (GetBsqSwapOffersReply) {
-    }
-    // Get all available v1 protocol offers with a BUY (BTC) or SELL (BTC) direction.  The returned offers
-    // are restricted to those associated with payment methods matching the payment methods you have set up
-    // on your node, e,g., NATIONAL_BANK, US_POSTAL_MONEY_ORDER, etc.
-    rpc GetOffers (GetOffersRequest) returns (GetOffersReply) {
-    }
-    // Get all user's BSQ swap offers with a BUY (BTC) or SELL (BTC) direction.
-    rpc GetMyBsqSwapOffers (GetBsqSwapOffersRequest) returns (GetMyBsqSwapOffersReply) {
-    }
-    // Get all user's open v1 protocol offers with a BUY (BTC) or SELL (BTC) direction.
-    rpc GetMyOffers (GetMyOffersRequest) returns (GetMyOffersReply) {
-    }
-    // Create a BSQ swap offer.
-    rpc CreateBsqSwapOffer (CreateBsqSwapOfferRequest) returns (CreateBsqSwapOfferReply) {
-    }
-    // Create a v1 protocol offer.
-    rpc CreateOffer (CreateOfferRequest) returns (CreateOfferReply) {
-    }
-    // Edit an open offer.
-    rpc EditOffer (EditOfferRequest) returns (EditOfferReply) {
-    }
-    // Cancel an open offer;  remove it from the offer book.
-    rpc CancelOffer (CancelOfferRequest) returns (CancelOfferReply) {
-    }
-}
 
 message GetOfferCategoryRequest {
     string id = 1;          // The offer's unique identifier.
@@ -140,15 +77,10 @@ message GetMyOfferRequest {
     string id = 1;  // The offer's unique identifier.
 }
 
-// Deprecated with rpc method GetMyOffer since 27-Dec-2021 (v1.8.0).
-message GetMyOfferReply {
-    OfferInfo offer = 1; // The returned v1 protocol offer.
-}
-
 message GetOffersRequest {
     string direction = 1;       // The offer's BUY (BTC) or SELL (BTC) direction.
     string currency_code = 2;   // The offer's fiat or altcoin currency code.
-    bool all = 3;               // Return all or only these matching my account
+    reserved 3; // This was the "all" field before.
 }
 
 message GetOffersReply {
@@ -298,10 +230,10 @@ message OfferInfo {
     // The offer's minimum BTC amount in satoshis.  One million satoshis is represented as 1000000.
     uint64 min_amount = 7;
     // The rounded volume of currency to be traded for BTC.
-    // Fiat volume is rounded to whole currency units (no cents).  Altcoin volume is rounded to 2 decimal places.
+    // Fiat volume is rounded to whole currency units (no cents).  Altcoin volume is rounded to the number of decimals the coin supports on its own chain, at most 8.
     string volume = 8;
     // The rounded, minimum volume of currency to be traded for BTC.
-    // Fiat volume is rounded to whole currency units (no cents).  Altcoin volume is rounded to 2 decimal places.
+    // Fiat volume is rounded to whole currency units (no cents).  Altcoin volume is rounded to the number of decimals the coin supports on its own chain, at most 8.
     string min_volume = 9;
     // A long representing the BTC buyer's security deposit in satoshis.
     uint64 buyer_security_deposit = 10;
@@ -361,29 +293,6 @@ message AvailabilityResultWithDescription {
     string description = 2;
 }
 
-/*
-* The PaymentAccounts service provides rpc methods for creating fiat and crypto currency payment accounts.
-*/
-service PaymentAccounts {
-    // Create a fiat payment account, providing details in a json form generated by rpc method GetPaymentAccountForm.
-    rpc CreatePaymentAccount (CreatePaymentAccountRequest) returns (CreatePaymentAccountReply) {
-    }
-    // Get list of all saved fiat payment accounts.
-    rpc GetPaymentAccounts (GetPaymentAccountsRequest) returns (GetPaymentAccountsReply) {
-    }
-    // Get list of all supported Bisq payment methods.
-    rpc GetPaymentMethods (GetPaymentMethodsRequest) returns (GetPaymentMethodsReply) {
-    }
-    // Get a json template file for a supported Bisq payment method.  Fill in the form and call rpc method CreatePaymentAccount.
-    rpc GetPaymentAccountForm (GetPaymentAccountFormRequest) returns (GetPaymentAccountFormReply) {
-    }
-    // Create a crypto currency (altcoin) payment account.
-    rpc CreateCryptoCurrencyPaymentAccount (CreateCryptoCurrencyPaymentAccountRequest) returns (CreateCryptoCurrencyPaymentAccountReply) {
-    }
-    // Get list of all supported Bisq crypto currency (altcoin) payment methods.
-    rpc GetCryptoCurrencyPaymentMethods (GetCryptoCurrencyPaymentMethodsRequest) returns (GetCryptoCurrencyPaymentMethodsReply) {
-    }
-}
 
 message CreatePaymentAccountRequest {
     string payment_account_form = 1;      // File path of filled json payment account form.
@@ -434,15 +343,6 @@ message GetCryptoCurrencyPaymentMethodsReply {
     repeated PaymentMethod payment_methods = 1;  // Ids of all supported Bisq altcoin payment methods.
 }
 
-service Price {
-    // Get the current market price for a crypto currency.
-    rpc GetMarketPrice (MarketPriceRequest) returns (MarketPriceReply) {
-    }
-    // Get the volume weighted average trade price for BSQ, calculated over N days.
-    // The response contains the average BSQ trade price in USD to 4 decimal places, and in BTC to 8 decimal places.
-    rpc GetAverageBsqTradePrice (GetAverageBsqTradePriceRequest) returns (GetAverageBsqTradePriceReply) {
-    }
-}
 
 message MarketPriceRequest {
     string currency_code = 1;   // The three letter currency code.
@@ -467,11 +367,6 @@ message AverageBsqTradePrice {
     string btc_price = 2;   // The average BSQ trade price in BTC to 8 decimal places.
 }
 
-service ShutdownServer {
-    // Shut down a local Bisq daemon.
-    rpc Stop (StopRequest) returns (StopReply) {
-    }
-}
 
 message StopRequest {
 }
@@ -479,42 +374,6 @@ message StopRequest {
 message StopReply {
 }
 
-/*
-* The Trades service provides rpc methods for taking, executing, and listing trades.
-*/
-service Trades {
-    // Get a currently open trade.
-    rpc GetTrade (GetTradeRequest) returns (GetTradeReply) {
-    }
-    // Get currently open, or historical trades (closed or failed).
-    rpc GetTrades (GetTradesRequest) returns (GetTradesReply) {
-    }
-    // Take an available offer.  Your node must have a payment account with the same payment method as
-    // the offer's payment method, e.g., NATIONAL_BANK, SEPA, SWIFT, etc.
-    rpc TakeOffer (TakeOfferRequest) returns (TakeOfferReply) {
-    }
-    // Send a 'payment started' message to a trading peer (the BTC seller).
-    rpc ConfirmPaymentStarted (ConfirmPaymentStartedRequest) returns (ConfirmPaymentStartedReply) {
-    }
-    // Send a 'payment started' message with optional XMR specific parameters to a trading peer (the BTC seller).
-    rpc ConfirmPaymentStartedXmr (ConfirmPaymentStartedXmrRequest) returns (ConfirmPaymentStartedReply) {
-    }
-    // Send a 'payment received' message to a trading peer (the BTC buyer).
-    rpc ConfirmPaymentReceived (ConfirmPaymentReceivedRequest) returns (ConfirmPaymentReceivedReply) {
-    }
-    // Close a completed trade;  move it to trade history.
-    rpc CloseTrade (CloseTradeRequest) returns (CloseTradeReply) {
-    }
-    // Fail an open trade.
-    rpc FailTrade (FailTradeRequest) returns (FailTradeReply) {
-    }
-    // Unfail a failed trade.
-    rpc UnFailTrade (UnFailTradeRequest) returns (UnFailTradeReply) {
-    }
-    // Withdraw trade proceeds to an external bitcoin wallet address.
-    rpc WithdrawFunds (WithdrawFundsRequest) returns (WithdrawFundsReply) {
-    }
-}
 
 message TakeOfferRequest {
     string offer_id = 1;                    // The unique identifier of the offer being taken.
@@ -542,9 +401,9 @@ message ConfirmPaymentStartedRequest {
 }
 
 message ConfirmPaymentStartedXmrRequest {
-  string trade_id = 1;    // The unique identifier of the open trade.
-  string tx_id = 2;       // XMR txId for payment proof
-  string tx_key = 3;      // XMR txKey for payment proof
+    string trade_id = 1;    // The unique identifier of the open trade.
+    string tx_id = 2;       // XMR txId for payment proof
+    string tx_key = 3;      // XMR txKey for payment proof
 }
 
 message ConfirmPaymentStartedReply {
@@ -740,73 +599,6 @@ message TxInfo {
     string memo = 7;        // An optional memo associated with the bitcoin transaction.
 }
 
-/*
-* The Wallets service provides rpc methods for basic wallet operations such as checking balances,
-* sending BTC or BSQ to external wallets, checking transaction fee rates, setting or unsetting
-* an encryption password on a a wallet, and unlocking / locking an encrypted wallet.
-*/
-service Wallets {
-    // Get the name of the BTC / BSQ network (mainnet, testnet3, or regtest).
-    rpc GetNetwork (GetNetworkRequest) returns (GetNetworkReply) {
-    }
-    // Get status of the DAO.
-    rpc GetDaoStatus (GetDaoStatusRequest) returns (GetDaoStatusReply) {
-    }
-    // Get the Bisq wallet's current BSQ and BTC balances.
-    rpc GetBalances (GetBalancesRequest) returns (GetBalancesReply) {
-    }
-    // Get BTC balance for a wallet address.
-    rpc GetAddressBalance (GetAddressBalanceRequest) returns (GetAddressBalanceReply) {
-    }
-    // Get an unused BSQ wallet address.
-    rpc GetUnusedBsqAddress (GetUnusedBsqAddressRequest) returns (GetUnusedBsqAddressReply) {
-    }
-    // Send an amount of BSQ to an external address.
-    rpc SendBsq (SendBsqRequest) returns (SendBsqReply) {
-    }
-    // Send an amount of BTC to an external address.
-    rpc SendBtc (SendBtcRequest) returns (SendBtcReply) {
-    }
-    // Verify a specific amount of BSQ was received by a BSQ wallet address.
-    // This is a problematic way of verifying BSQ payment has been received for a v1 trade protocol BSQ-BTC trade,
-    // which has been solved by the introduction of BSQ swap trades, which use a different, unused BSQ address for each trade.
-    rpc VerifyBsqSentToAddress (VerifyBsqSentToAddressRequest) returns (VerifyBsqSentToAddressReply) {
-    }
-    // Get the Bisq network's most recently available bitcoin miner transaction fee rate, or custom fee rate if set.
-    rpc GetTxFeeRate (GetTxFeeRateRequest) returns (GetTxFeeRateReply) {
-    }
-    // Set the Bisq daemon's custom bitcoin miner transaction fee rate, in sats/byte.
-    rpc SetTxFeeRatePreference (SetTxFeeRatePreferenceRequest) returns (SetTxFeeRatePreferenceReply) {
-    }
-    // Remove the custom bitcoin miner transaction fee rate;  revert to the Bisq network's bitcoin miner transaction fee rate.
-    rpc UnsetTxFeeRatePreference (UnsetTxFeeRatePreferenceRequest) returns (UnsetTxFeeRatePreferenceReply) {
-    }
-    // Get a bitcoin transactions.
-    rpc GetTransactions (GetTransactionsRequest) returns (GetTransactionsReply) {
-    }
-
-    // Get a bitcoin transaction summary.
-    rpc GetTransaction (GetTransactionRequest) returns (GetTransactionReply) {
-    }
-    // Get all bitcoin receiving addresses in the Bisq BTC wallet.
-    rpc GetFundingAddresses (GetFundingAddressesRequest) returns (GetFundingAddressesReply) {
-    }
-    // Set the Bisq wallet's encryption password.
-    rpc SetWalletPassword (SetWalletPasswordRequest) returns (SetWalletPasswordReply) {
-    }
-    // Remove the encryption password from the Bisq wallet.
-    rpc RemoveWalletPassword (RemoveWalletPasswordRequest) returns (RemoveWalletPasswordReply) {
-    }
-    // Lock an encrypted Bisq wallet before the UnlockWallet rpc method's timeout period has expired.
-    rpc LockWallet (LockWalletRequest) returns (LockWalletReply) {
-    }
-    // Unlock a Bisq encrypted wallet before calling wallet sensitive rpc methods: CreateOffer, TakeOffer, GetBalances,
-    // etc., for a timeout period in seconds.  An unlocked wallet will automatically lock itself after the timeout
-    // period has expired, or a LockWallet request has been made, whichever is first.  An unlocked wallet's timeout
-    // setting can be overridden by subsequent UnlockWallet calls.
-    rpc UnlockWallet (UnlockWalletRequest) returns (UnlockWalletReply) {
-    }
-}
 
 message GetNetworkRequest {
 }
@@ -820,6 +612,14 @@ message GetDaoStatusRequest {
 
 message GetDaoStatusReply {
     bool is_dao_state_ready_and_in_sync = 1;
+}
+
+message GetWalletSyncStatusRequest {
+}
+
+message GetWalletSyncStatusReply {
+    bool is_chain_height_synced_within_tolerance = 1;   // Whether the bitcoinj wallet's best-chain height is within tolerance of its peers.
+    int32 best_chain_height = 2;                        // The bitcoinj wallet's best-chain height (0 if the wallet is not ready).
 }
 
 message GetBalancesRequest {
@@ -927,6 +727,7 @@ message GetTransactionReply {
 }
 
 message GetFundingAddressesRequest {
+    optional bool only_funded = 1; // Return only addresses with positive balance.
 }
 
 message GetFundingAddressesReply {
@@ -1006,15 +807,250 @@ message AddressBalanceInfo {
     bool is_address_unused = 4;     // Whether the bitcoin address has ever been used, or not.
 }
 
-service GetVersion {
-    // Get the current Bisq version number.
-    rpc GetVersion (GetVersionRequest) returns (GetVersionReply) {
-    }
-}
 
 message GetVersionRequest {
 }
 
 message GetVersionReply {
     string version = 1;     // The version of the Bisq software release.
+}
+
+
+// DAO phase enum mirroring bisq.core.dao.state.model.governance.DaoPhase.Phase.
+// Values match the Java enum's declaration order.
+enum DaoPhaseEnum {
+    DAO_PHASE_UNDEFINED = 0;
+    DAO_PHASE_PROPOSAL = 1;
+    DAO_PHASE_BREAK1 = 2;
+    DAO_PHASE_BLIND_VOTE = 3;
+    DAO_PHASE_BREAK2 = 4;
+    DAO_PHASE_VOTE_REVEAL = 5;
+    DAO_PHASE_BREAK3 = 6;
+    DAO_PHASE_RESULT = 7;
+}
+
+message GetCycleInfoRequest {
+}
+
+message GetCycleInfoReply {
+    int32 cycle_index = 1;                 // Zero-based index of the cycle currently active.
+    int32 chain_height = 2;                // Daemon's current DAO chain height.
+    DaoPhaseEnum phase = 3;                // The phase the chain height is currently in.
+    int32 first_block_of_cycle = 4;        // Height of the first block in the current cycle.
+    int32 last_block_of_cycle = 5;         // Height of the last block in the current cycle.
+    int32 first_block_of_phase = 6;        // Height of the first block in the current phase.
+    int32 last_block_of_phase = 7;         // Height of the last block in the current phase.
+    int32 duration_of_phase = 8;           // Number of blocks in the current phase.
+    int32 blocks_remaining_in_phase = 9;   // Blocks remaining until next phase starts (max 0).
+    bool is_dao_state_in_sync = 10;        // Whether the daemon believes its DAO state is fully synced.
+    int32 num_blind_votes_in_current_cycle = 11;  // Count of blind-vote payloads visible to this daemon in the current cycle (use to await P2P propagation).
+    int32 num_proposals_in_current_cycle = 12;    // Count of proposals (validated tempProposals) the daemon sees in the current cycle.
+}
+
+message GetCyclesRequest {
+}
+
+message CycleInfo {
+    int32 cycle_index = 1;
+    int32 height_of_first_block = 2;
+    int32 height_of_last_block = 3;
+    int32 duration = 4;
+}
+
+message GetCyclesReply {
+    repeated CycleInfo cycles = 1;
+}
+
+message GetProposalsRequest {
+    enum Filter {
+        // Proposals visible in the current cycle plus the user's unconfirmed proposals.
+        ACTIVE_OR_MY_UNCONFIRMED = 0;
+        // Only the local user's proposals.
+        MY = 1;
+        // All evaluated proposals across past cycles. A proposal only becomes evaluated
+        // after its cycle reaches the RESULT phase; for proposals in cycles still in
+        // PROPOSAL/BLIND_VOTE/VOTE_REVEAL, use ACTIVE_OR_MY_UNCONFIRMED.
+        ALL = 2;
+        // Evaluated proposals in the cycle identified by cycle_index. Returns an empty
+        // list for the current cycle until it reaches the RESULT phase.
+        FOR_CYCLE = 3;
+    }
+    Filter filter = 1;
+    int32 cycle_index = 2;   // Used only when filter == FOR_CYCLE.
+}
+
+// Summary of a Proposal. The full Proposal protobuf is not exposed to keep the API stable;
+// most automation needs only these fields. The original Proposal proto is still available
+// via the daemon's persistence layer for power users.
+message ProposalInfo {
+    string tx_id = 1;                 // Tx id of the proposal transaction.
+    string proposal_type = 2;         // ProposalType enum name (COMPENSATION_REQUEST, CHANGE_PARAM, etc.).
+    string name = 3;                  // User-supplied proposal name.
+    string link = 4;                  // User-supplied proposal link (GitHub PR url, etc.).
+    int64 tx_block_height = 5;        // Block height the proposal tx was mined at; -1 if unconfirmed.
+    string version = 6;               // Proposal payload version.
+    int64 creation_date = 7;          // Wall-clock creation date in milliseconds since epoch.
+    // Proposal-type specific fields. Empty if not applicable.
+    int64 requested_bsq = 10;         // Compensation / Reimbursement: requested BSQ amount in sats.
+    string param = 11;                // ChangeParam: Param enum name.
+    string param_value = 12;          // ChangeParam: new value as string.
+    string bonded_role_type = 13;     // BondedRole: BondedRoleType enum name.
+    string lockup_tx_id = 14;         // ConfiscateBond: lockup tx id being confiscated.
+    string asset_code = 15;           // RemoveAsset: asset code being removed.
+    string burning_man_receiver_address = 16; // Compensation: optional receiver address.
+}
+
+message GetProposalsReply {
+    repeated ProposalInfo proposals = 1;
+}
+
+message GetBallotsRequest {
+}
+
+message BallotInfo {
+    ProposalInfo proposal = 1;
+    // Vote state: "accept", "reject", or "ignore". "ignore" indicates the ballot has no vote
+    // (the user has not set one, or the user explicitly removed their vote).
+    string vote = 2;
+    bool has_vote = 3;       // True when the ballot has any non-null vote object.
+    bool vote_accept = 4;    // Meaningful only when has_vote is true.
+}
+
+message GetBallotsReply {
+    repeated BallotInfo ballots = 1;
+}
+
+message GetMyVotesRequest {
+}
+
+message MyVoteInfo {
+    int64 date = 1;                  // Creation timestamp of the blind vote (millis since epoch).
+    string blind_vote_tx_id = 2;     // Blind vote tx id.
+    string reveal_tx_id = 3;         // Reveal tx id; empty until the reveal phase completes.
+    int64 stake = 4;                 // Vote stake in BSQ sats.
+    int32 cycle_index = 5;           // Index of the cycle the vote belongs to.
+}
+
+message GetMyVotesReply {
+    repeated MyVoteInfo votes = 1;
+}
+
+message GetVoteResultsRequest {
+    int32 cycle_index = 1; // Negative value selects the most recent completed cycle.
+}
+
+message EvaluatedProposalInfo {
+    ProposalInfo proposal = 1;
+    bool is_accepted = 2;            // Whether the proposal passed quorum and threshold.
+    int64 required_quorum = 3;       // Required BSQ quorum in sats.
+    int64 required_threshold = 4;    // Required threshold in basis points (e.g. 5000 = 50%).
+    int64 stake_of_all_votes = 5;    // Total stake (BSQ sats) of votes counted for this proposal.
+    int64 num_accepted_votes = 6;    // Count of accept votes.
+    int64 num_rejected_votes = 7;    // Count of reject votes.
+    int64 num_ignored_votes = 8;     // Count of ignored (abstain) votes.
+}
+
+message GetVoteResultsReply {
+    repeated EvaluatedProposalInfo evaluated_proposals = 1;
+}
+
+message GetBondedRolesRequest {
+}
+
+message BondedRoleInfo {
+    string bonded_role_type = 1;     // BondedRoleType enum name.
+    string name = 2;                 // Role name.
+    string link = 3;                 // Role link.
+    // Deprecated. It is true only while this lockup lifecycle is active, so it is false for a READY_FOR_LOCKUP,
+    // UNLOCKED, ILLEGALLY_SPENT or CONFISCATED entry of a role the DAO did accept. Use bond_state instead.
+    bool is_accepted = 4;
+    int64 required_bond = 5;         // Required BSQ bond in sats.
+    string role_uid = 6;             // Stable role uid; several entries can share it.
+    optional string lockup_tx_id = 7; // Exact lockup represented by this entry, absent for READY_FOR_LOCKUP.
+    string bond_state = 8;           // BondState enum name for this exact lockup lifecycle.
+}
+
+message GetBondedRolesReply {
+    repeated BondedRoleInfo roles = 1;
+}
+
+message GetDaoParamValueRequest {
+    string param = 1;     // Param enum name.
+}
+
+message GetDaoParamValueReply {
+    string value = 1;
+}
+
+message CreateCompensationProposalRequest {
+    string name = 1;
+    string link = 2;
+    int64 requested_bsq = 3;                  // Requested BSQ in sats.
+    string burning_man_receiver_address = 4;  // Optional; empty for not set.
+}
+
+message CreateReimbursementProposalRequest {
+    string name = 1;
+    string link = 2;
+    int64 requested_bsq = 3;
+}
+
+message CreateChangeParamProposalRequest {
+    string name = 1;
+    string link = 2;
+    string param = 3;        // Param enum name.
+    string param_value = 4;  // New value (as string; format depends on Param).
+}
+
+message CreateBondedRoleProposalRequest {
+    string bonded_role_type = 1;   // BondedRoleType enum name.
+    string name = 2;
+    string link = 3;
+}
+
+message CreateConfiscateBondProposalRequest {
+    string name = 1;
+    string link = 2;
+    string lockup_tx_id = 3;
+}
+
+message CreateGenericProposalRequest {
+    string name = 1;
+    string link = 2;
+}
+
+message CreateRemoveAssetProposalRequest {
+    string name = 1;
+    string link = 2;
+    string asset_code = 3;
+}
+
+message CreateProposalReply {
+    ProposalInfo proposal = 1;     // The newly created proposal.
+}
+
+message SetVoteRequest {
+    string proposal_tx_id = 1;
+    // One of: "accept", "reject", "ignore". "ignore" clears the ballot's vote.
+    string vote = 2;
+}
+
+message SetVoteReply {
+}
+
+message PublishBlindVoteRequest {
+    int64 stake = 1;   // BSQ stake in sats.
+}
+
+message PublishBlindVoteReply {
+    string blind_vote_tx_id = 1;
+}
+
+message GetRawTransactionRequest {
+    string tx_id = 1;
+}
+
+message GetRawTransactionReply {
+    // Hex-encoded serialized transaction. Empty if the local wallet does not know the tx.
+    string raw_tx_hex = 1;
 }

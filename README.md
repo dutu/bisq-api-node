@@ -62,11 +62,11 @@ console.log(result)
 ```
 
 
-## Requirements for target Bisq API Daemon 
+## Requirements for target Bisq API Daemon
 
-* Java JDK 11 or 15
+* Java JDK 21
 
-* Bisq API Daemon installed and running 
+* Current Bisq API Daemon installed and running
 
 > Never Run API Daemon and Bisq GUI On Same Host At Same Time.
 > 

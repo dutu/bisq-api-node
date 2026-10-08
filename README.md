@@ -76,6 +76,42 @@ console.log(result)
 ```
 
 
+### Restricted BTC withdrawals (custom daemon)
+
+This branch exposes `bisq.wallets.sendBtcFromAddresses(parameters)` for a custom
+daemon implementing `Wallets.SendBtcFromAddresses`:
+
+```js
+const result = await bisq.wallets.sendBtcFromAddresses({
+  address: destinationAddress,
+  amount: '0.02',
+  tx_fee_rate: '10',
+  memo: 'Personal withdrawal',
+  source_addresses: [sourceAddressA, sourceAddressB],
+})
+```
+
+`source_addresses` must contain at least one eligible wallet address. The daemon
+validates every source, deduplicates addresses, and restricts inputs to that set.
+It may use a subset of the selected addresses when sufficient. Missing or empty
+sources, blank strings, unknown addresses, and ineligible wallet addresses must
+fail with `INVALID_ARGUMENT`. Insufficient selected funds must fail even when
+other wallet addresses have enough BTC.
+
+`amount` includes the transaction fee; the destination receives the amount minus
+the fee, subject to existing dust handling. `tx_fee_rate` and `memo` are optional.
+The memo is wallet metadata and is not written on-chain. The immediate reply may
+omit it. The method returns the same reply shape as `sendBtc`.
+
+Wallet eligibility and transaction input restrictions are enforced by the
+daemon. This client forwards the supplied list without discovering, expanding,
+or filtering source addresses. `getFundingAddresses()` is not a complete list
+of eligible withdrawal sources.
+
+Errors reject the returned promise with the original gRPC error. A daemon
+without this RPC returns `UNIMPLEMENTED`. The client never substitutes `sendBtc`
+after any failure. Ordinary `sendBtc` remains unchanged.
+
 ## Requirements for target Bisq API Daemon
 
 * Java JDK 21

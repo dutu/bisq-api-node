@@ -5,16 +5,18 @@
 To install directly from a GitHub branch instead of npm:
 
 ```shell
-npm install "github:dutu/bisq-api-node#master"
+npm install "github:dutu/bisq-api-node#custom-send-btc-from-addresses"
 ```
 
 or with Yarn:
 
 ```shell
-yarn add bisq-api-node@"https://github.com/dutu/bisq-api-node.git#head=master"
+yarn add bisq-api-node@"https://github.com/dutu/bisq-api-node.git#head=custom-send-btc-from-addresses"
 ```
 
-Replace `master` with the desired branch. For reproducible installations, use a
+This branch adds the custom `SendBtcFromAddresses` RPC and is intended for GitHub
+installation without publishing a new npm version. Replace the branch name if
+needed. For reproducible installations, use a
 commit SHA (`#<sha>` for npm or `#commit=<sha>` for Yarn).
 Git installations build the CommonJS entrypoint automatically; build lifecycle
 scripts must be enabled. Published packages include the built entrypoint and

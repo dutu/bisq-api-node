@@ -143,6 +143,9 @@ wallets = {
   sendBtc: (parameters) => {
     return this.#callRPCMethod('Wallets', 'SendBtc', parameters)
   },
+  sendBtcFromAddresses: (parameters) => {
+    return this.#callRPCMethod('Wallets', 'SendBtcFromAddresses', parameters)
+  },
   verifyBsqSentToAddress: (parameters) => {
     return this.#callRPCMethod('Wallets', 'VerifyBsqSentToAddress', parameters)
   },

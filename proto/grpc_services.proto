@@ -191,6 +191,9 @@ service Wallets {
     // Send an amount of BTC to an external address.
     rpc SendBtc (SendBtcRequest) returns (SendBtcReply) {
     }
+    // Send BTC using only the supplied wallet source addresses. Never fall back to SendBtc on failure.
+    rpc SendBtcFromAddresses (SendBtcFromAddressesRequest) returns (SendBtcReply) {
+    }
     // Verify a specific amount of BSQ was received by a BSQ wallet address.
     // This is a problematic way of verifying BSQ payment has been received for a v1 trade protocol BSQ-BTC trade,
     // which has been solved by the introduction of BSQ swap trades, which use a different, unused BSQ address for each trade.

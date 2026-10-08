@@ -672,6 +672,19 @@ message SendBtcRequest {
     string memo = 4;
 }
 
+message SendBtcFromAddressesRequest {
+    // The external bitcoin address.
+    string address = 1;
+    // The withdrawal amount in BTC, including fees, with existing dust handling.
+    string amount = 2;
+    // Optional miner transaction fee rate, with the same semantics as SendBtc.
+    string tx_fee_rate = 3;
+    // Optional wallet transaction memo; not on-chain data.
+    string memo = 4;
+    // At least one eligible wallet source address is required. Inputs are restricted to these addresses.
+    repeated string source_addresses = 5;
+}
+
 message SendBtcReply {
     TxInfo tx_info = 1;     // The summary of a bitcoin transaction.
 }

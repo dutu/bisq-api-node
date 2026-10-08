@@ -30,3 +30,7 @@ yarn test
 
 Both `npm pack` and `yarn pack` build the CommonJS entrypoint before packaging.
 The generated `dist/` directory is not committed.
+
+After installing dependencies with Yarn, plain `npm run build`, `npm pack`, and
+`npm publish` also work: the build script activates Yarn's Plug'n'Play resolver
+when needed. With a `node_modules` installation, it uses normal Node resolution.

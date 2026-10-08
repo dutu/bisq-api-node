@@ -1,10 +1,20 @@
-import { transformFileAsync } from '@babel/core'
+import { existsSync } from 'node:fs'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const outputDirectory = path.join(root, 'dist')
+const require = createRequire(import.meta.url)
+
+// Plain npm commands do not activate Yarn's Plug'n'Play loader. Load it before
+// resolving Babel, while leaving normal node_modules installations alone.
+const pnpPath = path.join(root, '.pnp.cjs')
+if (!process.versions.pnp && !existsSync(path.join(root, 'node_modules')) && existsSync(pnpPath)) {
+  require(pnpPath).setup()
+}
+const { transformFileAsync } = require('@babel/core')
 
 // CommonJS has __filename instead of import.meta.url. Keep the ESM source intact.
 const commonJsImportMeta = ({ types: t }) => ({

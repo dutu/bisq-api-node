@@ -10,8 +10,8 @@ const root = fileURLToPath(new URL('../', import.meta.url))
 const manifest = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'))
 const yarnRelease = `.yarn/releases/yarn-${manifest.packageManager.split('@')[1]}.cjs`
 
-for (const manager of ['npm', 'yarn']) {
-  test(`${manager} packs working ESM and CommonJS entrypoints from a clean tree`, async (t) => {
+for (const [manager, linker] of [['npm', 'pnp'], ['yarn', 'pnp'], ['npm', 'node-modules']]) {
+  test(`${manager} packs working ESM and CommonJS entrypoints from a clean ${linker} tree`, async (t) => {
     const temporary = await mkdtemp(path.join(os.tmpdir(), 'bisq-package-test-'))
     t.after(() => rm(temporary, { recursive: true, force: true }))
     const source = path.join(temporary, 'source')
@@ -27,18 +27,22 @@ for (const manager of ['npm', 'yarn']) {
       await cp(path.join(root, entry), path.join(source, entry), { recursive: true })
     }
 
-    // Use the copied project's loader, without inheriting the test runner's PnP paths.
+    // Plain npm must work without inheriting or manually enabling Yarn's loader.
     const env = { ...process.env }
     delete env.NODE_OPTIONS
-    const pnpOptions = `--require ${JSON.stringify(path.join(source, '.pnp.cjs'))} --experimental-loader ${JSON.stringify(path.join(source, '.pnp.loader.mjs'))}`
     const run = (command, args, options = {}) => execFileSync(command, args, {
       cwd: source, env, encoding: 'utf8', stdio: 'pipe', timeout: 60_000, ...options,
     })
+    if (linker === 'node-modules') {
+      run(process.execPath, [path.join(source, yarnRelease), 'install', '--immutable'], {
+        env: { ...env, YARN_NODE_LINKER: 'node-modules', YARN_ENABLE_NETWORK: '0' },
+      })
+      // A tracked PnP file may remain after switching package managers.
+      await cp(path.join(root, '.pnp.cjs'), path.join(source, '.pnp.cjs'))
+    }
     const archive = path.join(temporary, 'package.tgz')
     if (manager === 'npm') {
-      run('npm', ['pack', '--pack-destination', temporary], {
-        env: { ...env, NODE_OPTIONS: pnpOptions },
-      })
+      run('npm', ['pack', '--pack-destination', temporary])
       await cp(path.join(temporary, `${manifest.name}-${manifest.version}.tgz`), archive)
     } else {
       run(process.execPath, [path.join(source, yarnRelease), 'pack', '--out', archive])

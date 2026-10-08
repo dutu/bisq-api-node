@@ -27,7 +27,21 @@ or
 yarn add bisq-api-node
 ```
 
+Node.js 22 or later is required.
+
 # Usage
+
+Import the class using ES modules:
+
+```js
+import Bisq from 'bisq-api-node'
+```
+
+or CommonJS:
+
+```js
+const Bisq = require('bisq-api-node')
+```
 
 ## Constructor
 

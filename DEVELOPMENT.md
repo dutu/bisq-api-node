@@ -1,0 +1,32 @@
+# Development
+
+## Install directly from a GitHub branch
+
+To install directly from a GitHub branch instead of npm:
+
+```shell
+npm install "github:dutu/bisq-api-node#master"
+```
+
+or with Yarn:
+
+```shell
+yarn add bisq-api-node@"https://github.com/dutu/bisq-api-node.git#head=master"
+```
+
+Replace `master` with the desired branch. For reproducible installations, use a
+commit SHA (`#<sha>` for npm or `#commit=<sha>` for Yarn).
+Git installations build the CommonJS entrypoint automatically; build lifecycle
+scripts must be enabled. Published packages include the built entrypoint and
+do not require Babel at runtime.
+
+## Build and test
+
+```shell
+yarn install --immutable
+yarn build
+yarn test
+```
+
+Both `npm pack` and `yarn pack` build the CommonJS entrypoint before packaging.
+The generated `dist/` directory is not committed.

@@ -32,7 +32,7 @@ const RAW_RUNTIME_STATE =
           ["@babel/core", "npm:7.29.7"],\
           ["@babel/preset-env", "virtual:e710b96c23036d309c6dd954573a28b55a47fab76be17c726f4ca821fdb8c3df159d3e7306740e49ab94cfa9ae15081543a814242a6e6da5425561fbfd62e260#npm:7.29.7"],\
           ["@babel/register", "virtual:e710b96c23036d309c6dd954573a28b55a47fab76be17c726f4ca821fdb8c3df159d3e7306740e49ab94cfa9ae15081543a814242a6e6da5425561fbfd62e260#npm:7.29.7"],\
-          ["@grpc/grpc-js", "npm:1.14.4"],\
+          ["@grpc/grpc-js", "npm:1.14.5"],\
           ["@grpc/proto-loader", "npm:0.8.1"],\
           ["babel-plugin-add-module-exports", "npm:1.0.4"],\
           ["bisq-api-node", "workspace:."],\
@@ -2145,10 +2145,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@grpc/grpc-js", [\
-      ["npm:1.14.4", {\
-        "packageLocation": "./.yarn/cache/@grpc-grpc-js-npm-1.14.4-27e11c00e7-f9cdbd81e7.zip/node_modules/@grpc/grpc-js/",\
+      ["npm:1.14.5", {\
+        "packageLocation": "./.yarn/cache/@grpc-grpc-js-npm-1.14.5-c688c33830-3be7fe0105.zip/node_modules/@grpc/grpc-js/",\
         "packageDependencies": [\
-          ["@grpc/grpc-js", "npm:1.14.4"],\
+          ["@grpc/grpc-js", "npm:1.14.5"],\
           ["@grpc/proto-loader", "npm:0.8.1"],\
           ["@js-sdsl/ordered-map", "npm:4.4.2"]\
         ],\
@@ -2567,7 +2567,7 @@ const RAW_RUNTIME_STATE =
           ["@babel/core", "npm:7.29.7"],\
           ["@babel/preset-env", "virtual:e710b96c23036d309c6dd954573a28b55a47fab76be17c726f4ca821fdb8c3df159d3e7306740e49ab94cfa9ae15081543a814242a6e6da5425561fbfd62e260#npm:7.29.7"],\
           ["@babel/register", "virtual:e710b96c23036d309c6dd954573a28b55a47fab76be17c726f4ca821fdb8c3df159d3e7306740e49ab94cfa9ae15081543a814242a6e6da5425561fbfd62e260#npm:7.29.7"],\
-          ["@grpc/grpc-js", "npm:1.14.4"],\
+          ["@grpc/grpc-js", "npm:1.14.5"],\
           ["@grpc/proto-loader", "npm:0.8.1"],\
           ["babel-plugin-add-module-exports", "npm:1.0.4"],\
           ["bisq-api-node", "workspace:."],\

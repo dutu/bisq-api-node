@@ -41,6 +41,9 @@ offers = {
   createOffer: (parameters) => {
     return this.#callRPCMethod('Offers', 'CreateOffer', parameters)
   },
+  cloneOffer: (parameters) => {
+    return this.#callRPCMethod('Offers', 'CloneOffer', parameters)
+  },
   editOffer: (parameters) => {
     return this.#callRPCMethod('Offers', 'EditOffer', parameters)
   },
@@ -142,6 +145,9 @@ wallets = {
   },
   sendBtc: (parameters) => {
     return this.#callRPCMethod('Wallets', 'SendBtc', parameters)
+  },
+  sendBtcFromAddresses: (parameters) => {
+    return this.#callRPCMethod('Wallets', 'SendBtcFromAddresses', parameters)
   },
   verifyBsqSentToAddress: (parameters) => {
     return this.#callRPCMethod('Wallets', 'VerifyBsqSentToAddress', parameters)

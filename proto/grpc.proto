@@ -155,6 +155,30 @@ message CreateOfferReply {
     OfferInfo offer = 1;    // The newly created v1 protocol offer.
 }
 
+message CloneOfferRequest {
+    // The source open offer to clone.  It must be one of this node's own open v1 protocol offers.
+    string source_offer_id = 1;
+    // Optional overrides inherit source values, except trigger_price follows the effective pricing mode below.
+    // For fiat offers:  a string representing the rounded, fixed fiat price of the offer, e.g., "45000".
+    // For altcoin offers:  a string representing the fixed BTC price of the offer, e.g., "0.00005".
+    optional string price = 2;
+    // Whether the clone uses market price margin based pricing. Unavailable market pricing is rejected, not changed to fixed pricing.
+    optional bool use_market_based_price = 3;
+    // The clone's market price margin as a percentage above or below the current market BTC price, e.g., 2.50 represents 2.5%.
+    optional double market_price_margin_pct = 4;
+    // A market price margin based offer's trigger price is the market BTC price at which the offer is automatically disabled.
+    // Fixed-price clones always use zero. For market-price clones, omission inherits a market-priced source's
+    // trigger, otherwise zero. Explicit "0" clears it. Nonzero values must be valid and on the correct side
+    // of the current market price. Malformed, negative, over-precision and overflowing values are rejected.
+    optional string trigger_price = 5;
+    // The unique identifier of the payment account used to clone the offer.  Defaults to the source offer's payment account.
+    optional string payment_account_id = 6;
+}
+
+message CloneOfferReply {
+    OfferInfo offer = 1;    // The placed v1 offer, including its actual activation state and trigger price.
+}
+
 message EditOfferRequest {
     // The edited offer's unique identifier.
     string id = 1;
@@ -670,6 +694,19 @@ message SendBtcRequest {
     string tx_fee_rate = 3;
     // An optional memo associated with the bitcoin transaction.
     string memo = 4;
+}
+
+message SendBtcFromAddressesRequest {
+    // The external bitcoin address.
+    string address = 1;
+    // The withdrawal amount in BTC, including fees, with existing dust handling.
+    string amount = 2;
+    // Optional miner transaction fee rate, with the same semantics as SendBtc.
+    string tx_fee_rate = 3;
+    // Optional wallet transaction memo; not on-chain data.
+    string memo = 4;
+    // At least one eligible wallet source address is required. Inputs are restricted to these addresses.
+    repeated string source_addresses = 5;
 }
 
 message SendBtcReply {

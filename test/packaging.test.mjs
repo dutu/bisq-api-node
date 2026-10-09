@@ -81,7 +81,9 @@ for (const [manager, linker] of [['npm', 'pnp'], ['yarn', 'pnp'], ['npm', 'node-
         : 'const Bisq = require("bisq-api-node");'
       run(process.execPath, ['--input-type', mode, '-e', `${load}
         const client = new Bisq({ipAddress: "127.0.0.1:1", password: "test"});
-        if (typeof Bisq !== "function" || typeof client.wallets.sendBtc !== "function") process.exit(1);
+        if (typeof Bisq !== "function" || typeof client.wallets.sendBtc !== "function" ||
+            typeof client.wallets.sendBtcFromAddresses !== "function" ||
+            typeof client.offers.cloneOffer !== "function") process.exit(1);
       `], { cwd: consumer })
     }
   })

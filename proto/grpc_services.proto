@@ -76,6 +76,9 @@ service Offers {
     // Create a v1 protocol offer.
     rpc CreateOffer (CreateOfferRequest) returns (CreateOfferReply) {
     }
+    // Clone one of the user's own open v1 protocol offers, reusing the source offer's maker-fee transaction.
+    rpc CloneOffer (CloneOfferRequest) returns (CloneOfferReply) {
+    }
     // Edit an open offer.
     rpc EditOffer (EditOfferRequest) returns (EditOfferReply) {
     }
@@ -190,6 +193,9 @@ service Wallets {
     }
     // Send an amount of BTC to an external address.
     rpc SendBtc (SendBtcRequest) returns (SendBtcReply) {
+    }
+    // Send BTC using only the supplied wallet source addresses. Never fall back to SendBtc on failure.
+    rpc SendBtcFromAddresses (SendBtcFromAddressesRequest) returns (SendBtcReply) {
     }
     // Verify a specific amount of BSQ was received by a BSQ wallet address.
     // This is a problematic way of verifying BSQ payment has been received for a v1 trade protocol BSQ-BTC trade,
